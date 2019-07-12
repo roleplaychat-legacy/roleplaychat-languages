@@ -6,11 +6,7 @@ import ru.pol.languages.Language;
 import ru.pol.languages.LanguageManager;
 import ru.xunto.roleplaychat.forge.RoleplayChat;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
 
 @Mod(modid = RoleplayChatLanguages.MODID, name = RoleplayChatLanguages.NAME, version = RoleplayChatLanguages.VERSION, acceptableRemoteVersions = "*", dependencies = "required-after:roleplaychat")
 public class RoleplayChatLanguages {

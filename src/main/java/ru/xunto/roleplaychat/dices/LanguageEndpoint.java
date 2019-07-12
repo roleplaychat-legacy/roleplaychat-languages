@@ -1,13 +1,10 @@
 package ru.xunto.roleplaychat.dices;
 
 import net.minecraft.util.text.TextFormatting;
-import org.apache.logging.log4j.core.Core;
 import ru.pol.languages.Language;
 import ru.xunto.roleplaychat.forge.RoleplayChat;
-import ru.xunto.roleplaychat.framework.CoreChat;
 import ru.xunto.roleplaychat.framework.api.Environment;
 import ru.xunto.roleplaychat.framework.api.PrefixMatchEndpoint;
-import ru.xunto.roleplaychat.framework.api.Priority;
 import ru.xunto.roleplaychat.framework.api.Request;
 import ru.xunto.roleplaychat.framework.jtwig.JTwigState;
 
@@ -15,6 +12,11 @@ import java.util.*;
 
 public class LanguageEndpoint extends PrefixMatchEndpoint {
     private final Language language;
+
+    LanguageEndpoint(Language language, String... prefixes) throws EmptyPrefixException {
+        super(prefixes);
+        this.language = language;
+    }
 
     public static LanguageEndpoint fromLanguage(Language language) {
         List<String> prefixes = new ArrayList<>();
@@ -36,11 +38,6 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
         } catch (EmptyPrefixException e) {
             return null;
         }
-    }
-
-    LanguageEndpoint(Language language, String... prefixes) throws EmptyPrefixException {
-        super(prefixes);
-        this.language = language;
     }
 
     @Override public String getName() {
