@@ -1,0 +1,65 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "https://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+    }
+}
+
+//allprojects {
+//    repositories {
+//        maven { url 'https://jitpack.io' }
+//    }
+//}
+
+apply plugin: "net.minecraftforge.gradle.forge"
+
+version = modVersion
+group = modGroup
+archivesBaseName = modBaseName
+
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
+minecraft {
+    version = project.forgeVersion
+    runDir = "run"
+    mappings = project.mcpVersion
+
+    replaceIn "RoleplayChatLanguages.java"
+    replace "@MODID@", modBaseName
+    replace "@VERSION@", forgeVersion
+}
+
+dependencies {
+//    compile 'com.github.roleplaychat:RoleplayChat:0.35.6'
+}
+
+jar {
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)) {
+            exclude 'META-INF', 'META-INF/**'
+        }
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include "mcmod.info"
+        expand "version": project.version, "mcversion": project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "mcmod.info"
+    }
+}
