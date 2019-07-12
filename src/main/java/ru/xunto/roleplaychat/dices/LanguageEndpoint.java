@@ -8,7 +8,10 @@ import ru.xunto.roleplaychat.framework.api.PrefixMatchEndpoint;
 import ru.xunto.roleplaychat.framework.api.Request;
 import ru.xunto.roleplaychat.framework.jtwig.JTwigState;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class LanguageEndpoint extends PrefixMatchEndpoint {
     private final Language language;
@@ -25,14 +28,10 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
         for (char c : language.getName().toCharArray()) {
             prefix += c;
             prefixes.add(prefix);
-            System.out.println(prefix);
         }
 
         Collections.reverse(prefixes);
 
-        System.out.println("=======");
-
-        System.out.println(Arrays.toString(prefixes.toArray()));
         try {
             return new LanguageEndpoint(language, prefixes.toArray(new String[0]));
         } catch (EmptyPrefixException e) {
