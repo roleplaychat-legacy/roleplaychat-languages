@@ -20,6 +20,10 @@ public class RoleplayChatLanguages {
 
     private static Logger logger;
 
+    public static String getPermission(Language language) {
+        return String.format("lang.%s", language.getName());
+    }
+
     public static String getSpeakPermission(Language language) {
         return String.format("lang.%s.speak", language.getName());
     }
@@ -31,9 +35,12 @@ public class RoleplayChatLanguages {
     private static void registerPermission(Language language) {
         String languageName = language.getName();
 
+        String nodeGeneral = RoleplayChatLanguages.getPermission(language);
         String nodeSpeak = RoleplayChatLanguages.getSpeakPermission(language);
         String nodeUnderstand = RoleplayChatLanguages.getUnderstandPermission(language);
 
+        PermissionAPI.registerNode(nodeGeneral, DefaultPermissionLevel.OP,
+            String.format("Ability to speak and understand language: %s", languageName));
         PermissionAPI.registerNode(nodeSpeak, DefaultPermissionLevel.OP,
             String.format("Ability to speak language: %s", languageName));
         PermissionAPI.registerNode(nodeUnderstand, DefaultPermissionLevel.OP,

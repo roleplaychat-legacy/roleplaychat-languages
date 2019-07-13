@@ -45,9 +45,12 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
     }
 
     @Override public boolean matchEndpoint(Request request, Environment environment) {
+        String generalPermission = RoleplayChatLanguages.getPermission(language);
         String speakPermission = RoleplayChatLanguages.getSpeakPermission(language);
-        return PermissionAPI.hasPermission(request.getRequester(), speakPermission) && super
-            .matchEndpoint(request, environment);
+        return
+            (PermissionAPI.hasPermission(request.getRequester(), generalPermission) || PermissionAPI
+                .hasPermission(request.getRequester(), speakPermission)) && super
+                .matchEndpoint(request, environment);
     }
 
     @Override public void processEndpoint(Request request, Environment environment) {
