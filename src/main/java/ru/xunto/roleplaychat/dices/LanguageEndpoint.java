@@ -1,6 +1,7 @@
 package ru.xunto.roleplaychat.dices;
 
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.server.permission.PermissionAPI;
 import ru.pol.languages.Language;
 import ru.xunto.roleplaychat.forge.RoleplayChat;
 import ru.xunto.roleplaychat.framework.api.Environment;
@@ -41,6 +42,12 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
 
     @Override public String getName() {
         return String.format("язык (%s)", language.getName());
+    }
+
+    @Override public boolean matchEndpoint(Request request, Environment environment) {
+        String speakPermission = RoleplayChatLanguages.getSpeakPermission(language);
+        return PermissionAPI.hasPermission(request.getRequester(), speakPermission) && super
+            .matchEndpoint(request, environment);
     }
 
     @Override public void processEndpoint(Request request, Environment environment) {
