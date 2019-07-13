@@ -70,7 +70,7 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
         colors.put("default", TextFormatting.GRAY);
 
         Set<EntityPlayer> recipientsOfTranslation = environment.getRecipients();
-        recipientsOfTranslation.removeIf(r -> RoleplayChatLanguages.canUnderstand(r, language));
+        recipientsOfTranslation.removeIf(r -> !RoleplayChatLanguages.canUnderstand(r, language));
 
         System.out.println(Arrays.toString(environment.getRecipients().toArray()));
     }
