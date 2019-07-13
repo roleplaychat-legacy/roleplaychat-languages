@@ -1,5 +1,6 @@
 package ru.xunto.roleplaychat.dices;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -30,6 +31,20 @@ public class RoleplayChatLanguages {
 
     public static String getUnderstandPermission(Language language) {
         return String.format("lang.%s.understand", language.getName());
+    }
+
+    public static boolean canSpeak(EntityPlayer player, Language language) {
+        String generalPermission = RoleplayChatLanguages.getPermission(language);
+        String speakPermission = RoleplayChatLanguages.getSpeakPermission(language);
+        return (PermissionAPI.hasPermission(player, generalPermission) || PermissionAPI
+            .hasPermission(player, speakPermission));
+    }
+
+    public static boolean canUnderstand(EntityPlayer player, Language language) {
+        String generalPermission = RoleplayChatLanguages.getPermission(language);
+        String understandPermission = RoleplayChatLanguages.getSpeakPermission(language);
+        return (PermissionAPI.hasPermission(player, generalPermission) || PermissionAPI
+            .hasPermission(player, understandPermission));
     }
 
     private static void registerPermission(Language language) {

@@ -1,7 +1,7 @@
 package ru.xunto.roleplaychat.dices;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.server.permission.PermissionAPI;
 import ru.pol.languages.Language;
 import ru.xunto.roleplaychat.forge.RoleplayChat;
 import ru.xunto.roleplaychat.framework.api.Environment;
@@ -9,10 +9,7 @@ import ru.xunto.roleplaychat.framework.api.PrefixMatchEndpoint;
 import ru.xunto.roleplaychat.framework.api.Request;
 import ru.xunto.roleplaychat.framework.jtwig.JTwigState;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LanguageEndpoint extends PrefixMatchEndpoint {
     private final Language language;
@@ -45,23 +42,23 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
     }
 
     @Override public boolean matchEndpoint(Request request, Environment environment) {
-        String generalPermission = RoleplayChatLanguages.getPermission(language);
-        String speakPermission = RoleplayChatLanguages.getSpeakPermission(language);
-        return
-            (PermissionAPI.hasPermission(request.getRequester(), generalPermission) || PermissionAPI
-                .hasPermission(request.getRequester(), speakPermission)) && super
+        return RoleplayChatLanguages.canSpeak(request.getRequester(), language) && super
                 .matchEndpoint(request, environment);
     }
 
-    @Override public void processEndpoint(Request request, Environment environment) {
+    public void processEndpoint(Request request, Environment environment, Runnable next) {
+        environment.setProcessed(true);
+
         Environment translatedEnvironment = environment.clone();
         JTwigState translatedState = translatedEnvironment.getState();
+
+        next.run();
 
         // Fill new state with translated message
         String text = translatedState.getValue(Environment.TEXT);
         translatedState.setValue(Environment.TEXT, language.translatePhrase(text));
-        translatedEnvironment.setProcessed(true);
-        RoleplayChat.chat.process(request, translatedEnvironment);
+        System.out.println(translatedState.getValue(Environment.TEXT));
+        RoleplayChat.chat.send(translatedEnvironment);
 
         // Fill label
         JTwigState state = environment.getState();
@@ -71,5 +68,10 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
 
         Map<String, TextFormatting> colors = environment.getColors();
         colors.put("default", TextFormatting.GRAY);
+
+        Set<EntityPlayer> recipientsOfTranslation = environment.getRecipients();
+        recipientsOfTranslation.removeIf(r -> RoleplayChatLanguages.canUnderstand(r, language));
+
+        System.out.println(Arrays.toString(environment.getRecipients().toArray()));
     }
 }
