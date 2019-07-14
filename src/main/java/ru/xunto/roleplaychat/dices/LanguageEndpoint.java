@@ -20,15 +20,10 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
     }
 
     public static LanguageEndpoint fromLanguage(Language language) {
-        List<String> prefixes = new ArrayList<>();
-        String prefix = ":";
-
-        for (char c : language.getName().toCharArray()) {
-            prefix += c;
-            prefixes.add(prefix);
+        List<String> prefixes = new ArrayList<>(generatePrefixes(language.getName()));
+        for (String alias : language.getAlias()) {
+            prefixes.addAll(generatePrefixes(alias));
         }
-
-        Collections.reverse(prefixes);
 
         try {
             return new LanguageEndpoint(language, prefixes.toArray(new String[0]));
@@ -37,13 +32,26 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
         }
     }
 
+    private static List<String> generatePrefixes(String string) {
+        List<String> prefixes = new ArrayList<>();
+
+        String prefix = ":";
+
+        for (char c : string.toCharArray()) {
+            prefix += c;
+            prefixes.add(prefix);
+        }
+
+        return prefixes;
+    }
+
     @Override public String getName() {
         return String.format("язык (%s)", language.getName());
     }
 
     @Override public boolean matchEndpoint(Request request, Environment environment) {
         return RoleplayChatLanguages.canSpeak(request.getRequester(), language) && super
-                .matchEndpoint(request, environment);
+            .matchEndpoint(request, environment);
     }
 
     public void processEndpoint(Request request, Environment environment, Runnable next) {
