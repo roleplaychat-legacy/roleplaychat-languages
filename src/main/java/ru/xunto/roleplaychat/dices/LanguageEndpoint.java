@@ -65,7 +65,6 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
         // Fill new state with translated message
         String text = translatedState.getValue(Environment.TEXT);
         translatedState.setValue(Environment.TEXT, language.translatePhrase(text));
-        System.out.println(translatedState.getValue(Environment.TEXT));
         RoleplayChat.chat.send(translatedEnvironment);
 
         // Fill label
@@ -79,7 +78,5 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
 
         Set<EntityPlayer> recipientsOfTranslation = environment.getRecipients();
         recipientsOfTranslation.removeIf(r -> !RoleplayChatLanguages.canUnderstand(r, language));
-
-        System.out.println(Arrays.toString(environment.getRecipients().toArray()));
     }
 }
