@@ -3,13 +3,16 @@ package ru.xunto.roleplaychat.dices;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
 import ru.pol.languages.Language;
-import ru.xunto.roleplaychat.forge.RoleplayChat;
 import ru.xunto.roleplaychat.framework.api.Environment;
 import ru.xunto.roleplaychat.framework.api.PrefixMatchEndpoint;
 import ru.xunto.roleplaychat.framework.api.Request;
 import ru.xunto.roleplaychat.framework.jtwig.JTwigState;
+import ru.xunto.roleplaychat.framework.middleware_flow.Flow;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class LanguageEndpoint extends PrefixMatchEndpoint {
     private final Language language;
@@ -45,27 +48,25 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
         return prefixes;
     }
 
-    @Override public String getName() {
-        return String.format("язык (%s)", language.getName());
-    }
-
     @Override public boolean matchEndpoint(Request request, Environment environment) {
         return RoleplayChatLanguages.canSpeak(request.getRequester(), language) && super
             .matchEndpoint(request, environment);
     }
 
-    public void processEndpoint(Request request, Environment environment, Runnable next) {
+    @Override public String getName() {
+        return String.format("язык (%s)", language.getName());
+    }
+
+    public void processEndpoint(Request request, Environment environment, Flow fork) {
         environment.setProcessed(true);
 
         Environment translatedEnvironment = environment.clone();
         JTwigState translatedState = translatedEnvironment.getState();
 
-        next.run();
-
         // Fill new state with translated message
         String text = translatedState.getValue(Environment.TEXT);
         translatedState.setValue(Environment.TEXT, language.translatePhrase(text));
-        RoleplayChat.chat.send(translatedEnvironment);
+        fork.fork(translatedEnvironment);
 
         // Fill label
         JTwigState state = environment.getState();

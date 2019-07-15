@@ -21,30 +21,11 @@ public class RoleplayChatLanguages {
 
     private static Logger logger;
 
-    public static String getPermission(Language language) {
-        return String.format("lang.%s", language.getName());
-    }
-
-    public static String getSpeakPermission(Language language) {
-        return String.format("lang.%s.speak", language.getName());
-    }
-
-    public static String getUnderstandPermission(Language language) {
-        return String.format("lang.%s.understand", language.getName());
-    }
-
     public static boolean canSpeak(EntityPlayer player, Language language) {
         String generalPermission = RoleplayChatLanguages.getPermission(language);
         String speakPermission = RoleplayChatLanguages.getSpeakPermission(language);
         return (PermissionAPI.hasPermission(player, generalPermission) || PermissionAPI
             .hasPermission(player, speakPermission));
-    }
-
-    public static boolean canUnderstand(EntityPlayer player, Language language) {
-        String generalPermission = RoleplayChatLanguages.getPermission(language);
-        String understandPermission = RoleplayChatLanguages.getSpeakPermission(language);
-        return (PermissionAPI.hasPermission(player, generalPermission) || PermissionAPI
-            .hasPermission(player, understandPermission));
     }
 
     private static void registerPermission(Language language) {
@@ -60,6 +41,17 @@ public class RoleplayChatLanguages {
             String.format("Ability to speak language: %s", languageName));
         PermissionAPI.registerNode(nodeUnderstand, DefaultPermissionLevel.OP,
             String.format("Ability to understand language: %s", languageName));
+    }
+
+    public static String getPermission(Language language) {
+        return String.format("lang.%s", language.getName());
+    }
+
+    public static boolean canUnderstand(EntityPlayer player, Language language) {
+        String generalPermission = RoleplayChatLanguages.getPermission(language);
+        String understandPermission = RoleplayChatLanguages.getSpeakPermission(language);
+        return (PermissionAPI.hasPermission(player, generalPermission) || PermissionAPI
+            .hasPermission(player, understandPermission));
     }
 
     @Mod.EventHandler public void preInit(FMLPreInitializationEvent event) {
@@ -78,5 +70,13 @@ public class RoleplayChatLanguages {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String getSpeakPermission(Language language) {
+        return String.format("lang.%s.speak", language.getName());
+    }
+
+    public static String getUnderstandPermission(Language language) {
+        return String.format("lang.%s.understand", language.getName());
     }
 }
