@@ -1,13 +1,14 @@
-package ru.xunto.roleplaychat.dices;
+package ru.xunto.roleplaychat.dices.common;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.text.TextFormatting;
 import ru.pol.languages.Language;
+import ru.xunto.roleplaychat.RoleplayChatCore;
+import ru.xunto.roleplaychat.api.ISpeaker;
 import ru.xunto.roleplaychat.framework.api.Environment;
 import ru.xunto.roleplaychat.framework.api.PrefixMatchEndpoint;
 import ru.xunto.roleplaychat.framework.api.Request;
 import ru.xunto.roleplaychat.framework.jtwig.JTwigState;
 import ru.xunto.roleplaychat.framework.middleware_flow.Flow;
+import ru.xunto.roleplaychat.framework.renderer.text.TextColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,22 +18,18 @@ import java.util.Set;
 public class LanguageEndpoint extends PrefixMatchEndpoint {
     private final Language language;
 
-    LanguageEndpoint(Language language, String... prefixes) throws EmptyPrefixException {
-        super(prefixes);
+    LanguageEndpoint(RoleplayChatCore core, Language language, String... prefixes) {
+        super(core, prefixes);
         this.language = language;
     }
 
-    public static LanguageEndpoint fromLanguage(Language language) {
+    public static LanguageEndpoint fromLanguage(RoleplayChatCore core, Language language) {
         List<String> prefixes = new ArrayList<>(generatePrefixes(language.getName()));
         for (String alias : language.getAlias()) {
             prefixes.addAll(generatePrefixes(alias));
         }
 
-        try {
-            return new LanguageEndpoint(language, prefixes.toArray(new String[0]));
-        } catch (EmptyPrefixException e) {
-            return null;
-        }
+        return new LanguageEndpoint(core, language, prefixes.toArray(new String[0]));
     }
 
     private static List<String> generatePrefixes(String string) {
@@ -48,12 +45,14 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
         return prefixes;
     }
 
-    @Override public boolean matchEndpoint(Request request, Environment environment) {
-        return RoleplayChatLanguages.canSpeak(request.getRequester(), language) && super
-            .matchEndpoint(request, environment);
+    @Override
+    public boolean matchEndpoint(Request request, Environment environment) {
+        return LanguagesCommon.canSpeak(request.getRequester(), language) && super
+                .matchEndpoint(request, environment);
     }
 
-    @Override public String getName() {
+    @Override
+    public String getName() {
         return String.format("язык (%s)", language.getName());
     }
 
@@ -74,10 +73,10 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
         state.setValue(Environment.TEXT, text);
         state.setValue(Environment.LABEL, language.getName());
 
-        Map<String, TextFormatting> colors = environment.getColors();
-        colors.put("default", TextFormatting.GRAY);
+        Map<String, TextColor> colors = environment.getColors();
+        colors.put("default", TextColor.GRAY);
 
-        Set<EntityPlayer> recipientsOfTranslation = environment.getRecipients();
-        recipientsOfTranslation.removeIf(r -> !RoleplayChatLanguages.canUnderstand(r, language));
+        Set<ISpeaker> recipientsOfTranslation = environment.getRecipients();
+        recipientsOfTranslation.removeIf(r -> !LanguagesCommon.canUnderstand(r, language));
     }
 }
