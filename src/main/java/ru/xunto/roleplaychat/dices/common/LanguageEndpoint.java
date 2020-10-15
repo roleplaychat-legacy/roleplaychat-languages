@@ -6,9 +6,9 @@ import ru.xunto.roleplaychat.api.ISpeaker;
 import ru.xunto.roleplaychat.framework.api.Environment;
 import ru.xunto.roleplaychat.framework.api.PrefixMatchEndpoint;
 import ru.xunto.roleplaychat.framework.api.Request;
-import ru.xunto.roleplaychat.framework.jtwig.JTwigState;
 import ru.xunto.roleplaychat.framework.middleware_flow.Flow;
 import ru.xunto.roleplaychat.framework.renderer.text.TextColor;
+import ru.xunto.roleplaychat.framework.state.MessageState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +60,7 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
         environment.setProcessed(true);
 
         Environment translatedEnvironment = environment.clone();
-        JTwigState translatedState = translatedEnvironment.getState();
+        MessageState translatedState = translatedEnvironment.getState();
 
         // Fill new state with translated message
         String text = translatedState.getValue(Environment.TEXT);
@@ -68,7 +68,7 @@ public class LanguageEndpoint extends PrefixMatchEndpoint {
         fork.fork(translatedEnvironment);
 
         // Fill label
-        JTwigState state = environment.getState();
+        MessageState state = environment.getState();
 
         state.setValue(Environment.TEXT, text);
         state.setValue(Environment.LABEL, language.getName());
