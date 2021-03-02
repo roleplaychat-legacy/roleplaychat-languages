@@ -1,4 +1,4 @@
-package ru.xunto.roleplaychat.dices.common;
+package ru.xunto.roleplaychat.languages.common;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -6,9 +6,9 @@ import ru.pol.languages.Language;
 import ru.pol.languages.LanguageManager;
 import ru.xunto.roleplaychat.RoleplayChatCore;
 import ru.xunto.roleplaychat.api.ISpeaker;
-import ru.xunto.roleplaychat.dices.common.permission.PermissionLanguage;
-import ru.xunto.roleplaychat.dices.common.permission.PermissionSpeak;
-import ru.xunto.roleplaychat.dices.common.permission.PermissionUnderstand;
+import ru.xunto.roleplaychat.languages.common.permission.PermissionLanguage;
+import ru.xunto.roleplaychat.languages.common.permission.PermissionSpeak;
+import ru.xunto.roleplaychat.languages.common.permission.PermissionUnderstand;
 
 import java.io.FileNotFoundException;
 

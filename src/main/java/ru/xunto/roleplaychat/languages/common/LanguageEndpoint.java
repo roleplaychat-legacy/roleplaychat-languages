@@ -1,4 +1,4 @@
-package ru.xunto.roleplaychat.dices.common;
+package ru.xunto.roleplaychat.languages.common;
 
 import ru.pol.languages.Language;
 import ru.xunto.roleplaychat.RoleplayChatCore;

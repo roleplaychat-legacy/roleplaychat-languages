@@ -1,4 +1,4 @@
-package ru.xunto.roleplaychat.dices.common.permission;
+package ru.xunto.roleplaychat.languages.common.permission;
 
 import ru.pol.languages.Language;
 import ru.xunto.roleplaychat.api.IPermission;

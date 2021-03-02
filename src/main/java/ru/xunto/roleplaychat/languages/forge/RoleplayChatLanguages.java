@@ -1,10 +1,10 @@
-package ru.xunto.roleplaychat.dices.forge;
+package ru.xunto.roleplaychat.languages.forge;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
 import ru.xunto.roleplaychat.RoleplayChatCore;
-import ru.xunto.roleplaychat.dices.common.LanguagesCommon;
+import ru.xunto.roleplaychat.languages.common.LanguagesCommon;
 
 import java.io.FileNotFoundException;
 
